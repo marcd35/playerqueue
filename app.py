@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, jsonify, url_for
+from flask import Flask, render_template, request, jsonify, url_for, send_from_directory
 import os
 from queue_tracker import QueueTracker
 
-app = Flask(__name__)
+# Create a Flask app with custom template folder configuration
+app = Flask(__name__, 
+           template_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), ''),
+           static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'))
 
 # Create queue tracker instance
 queue_tracker = QueueTracker()
@@ -10,7 +13,13 @@ queue_tracker = QueueTracker()
 # Routes
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Redirect to queue.html
+    return send_from_directory('.', 'queue.html')
+
+@app.route('/queue.html')
+def queue_page():
+    # Serve queue.html directly
+    return send_from_directory('.', 'queue.html')
 
 @app.route('/start_queue', methods=['POST'])
 def start_queue():
@@ -38,66 +47,7 @@ def update_queue():
 def get_status():
     return jsonify(queue_tracker.get_status())
 
-# Create necessary directories and files if they don't exist
-def setup_app():
-    # Create templates directory
-    templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-    os.makedirs(templates_dir, exist_ok=True)
-    
-    # Create static directory and subdirectories
-    static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-    os.makedirs(static_dir, exist_ok=True)
-    
-    js_dir = os.path.join(static_dir, 'js')
-    os.makedirs(js_dir, exist_ok=True)
-    
-    # Create index.html if it doesn't exist
-    index_path = os.path.join(templates_dir, 'index.html')
-    if not os.path.exists(index_path):
-        with open(index_path, 'w') as f:
-            # Use the HTML template from the index_template artifact
-            f.write('''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Queue Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        /* CSS styles here */
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Queue Tracker</h1>
-        <!-- HTML content here -->
-    </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
-</html>
-            ''')
-    
-    # Create main.js if it doesn't exist
-    js_path = os.path.join(js_dir, 'main.js')
-    if not os.path.exists(js_path):
-        with open(js_path, 'w') as f:
-            # Use the JavaScript from the static_js artifact
-            f.write('''
-// Queue Tracker Client-side JavaScript
-// JavaScript content here
-            ''')
-
 if __name__ == '__main__':
-    setup_app()
-    # Get port from environment variable or use default 5000
     port = int(os.environ.get('PORT', 5000))
-    # Get debug mode from environment variable (default to False for production)
     debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
     app.run(debug=debug_mode, host='0.0.0.0', port=port)

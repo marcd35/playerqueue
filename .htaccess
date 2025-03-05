@@ -1,7 +1,18 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /queue/
+    
+    # Don't rewrite for static files
+    RewriteCond %{REQUEST_URI} !^/queue/static/.*$
+    
+    # Don't rewrite if the file exists
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ /wsgi.py/$1 [QSA,L]
+    
+    # Don't rewrite for direct access to queue.html
+    RewriteCond %{REQUEST_URI} !^/queue/queue.html$
+    
+    # Forward everything else to the Flask app
+    RewriteRule ^(.*)$ wsgi.py/$1 [QSA,L]
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -10,4 +21,4 @@
 
 AddHandler cgi-script .py
 Options +ExecCGI
-DirectoryIndex wsgi.py
+DirectoryIndex queue.html wsgi.py
