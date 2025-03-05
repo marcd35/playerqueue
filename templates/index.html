@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input, button {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .status-container {
+            margin-top: 30px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .status-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .status-value {
+            color: #333;
+        }
+        #queue-message {
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Queue Tracker</h1>
+        
+        <div id="start-queue-card" class="card">
+            <h2>Start New Queue</h2>
+            <div>
+                <input type="number" id="start-queue-size" placeholder="Number of people in queue" min="1">
+                <button id="start-queue-btn">Start Queue</button>
+            </div>
+        </div>
+        
+        <div id="update-queue-card" class="card hidden">
+            <h2>Update Queue</h2>
+            <div>
+                <input type="number" id="update-queue-size" placeholder="Current people in queue" min="0">
+                <button id="update-queue-btn">Update Queue</button>
+            </div>
+        </div>
+        
+        <div id="queue-message" class="hidden"></div>
+        
+        <div id="status-container" class="status-container hidden">
+            <h2>Queue Status</h2>
+            <div id="status-details"></div>
+        </div>
+    </div>
+
+    <!-- Include the external JavaScript file -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
